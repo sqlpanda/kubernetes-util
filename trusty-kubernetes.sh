@@ -77,7 +77,7 @@ apt-get install -y kubernetes-cni kubectl cri-tools
 fi
 
 set -e
-set -x
+#set -x
 
 getpkg()
 {
