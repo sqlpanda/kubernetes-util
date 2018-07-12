@@ -28,33 +28,48 @@
 
 
 # Install kubernete in Ubunto 14
-apt-get install docker.io -y
-usermod -aG docker [YourUserNameHere]  
-service docker restart  
+if [ -e /usr/bin/docker ]
+then
+        echo "* Docker is installed."
+else
+	apt-get install docker.io -y
+	usermod -aG docker [YourUserNameHere]  
+	service docker restart  
+fi
+
+apt-get update > /dev/null
+apt-get install openssl make curl ethtool binutils cri-tools binutils  ebtables socat git   -y
 
 
-apt-get install openssl make curl ethtool  cri-tools binutils  ebtables socat git   -y
+if [ -e /usr/bin/go ] 
+then
+	echo "* go is installed."
+else
+	wget https://dl.google.com/go/go1.10.linux-amd64.tar.gz
+	tar -xvf go1.10.linux-amd64.tar.gz
+	mv go /usr/local
+	ln -s /usr/local/go/bin/go /usr/bin/go
+	go version
+fi
+
+if [ -e /usr/bin/etcd ]
+then
+        echo "* etcd is installed."
+else
+	wget https://github.com/coreos/etcd/releases/download/v3.3.8/etcd-v3.3.8-linux-amd64.tar.gz
+	tar xzvf etcd-v3.3.8-linux-amd64.tar.gz  >/dev/null
+	pushd etcd-v3.3.8-linux-amd64 >/dev/null
+	mv etcd* /usr/bin
+	popd >/dev/null
+	rm -rf etcd-v3.3.8-linux-amd64
+	rm -rf etcd-v3.3.8-linux-amd64.tar.gz
+fi
 
 
-wget https://dl.google.com/go/go1.10.linux-amd64.tar.gz
-tar -xvf go1.10.linux-amd64.tar.gz
-mv go /usr/local
-ln -s /usr/local/go/bin/go /usr/bin/go
-go version
-rm go1.10.linux-amd64.tar.gz
-
-wget https://github.com/coreos/etcd/releases/download/v3.3.8/etcd-v3.3.8-linux-amd64.tar.gz
-tar xzvf etcd-v3.3.8-linux-amd64.tar.gz
-cd etcd-v3.3.8-linux-amd64.tar.gz
-mv etcd* /usr/bin
-rm -rf etcd-v3.3.8-linux-amd64
-rm -rf etcd-v3.3.8-linux-amd64.tar.gz
-
-apt-get update && apt-get install -y apt-transport-https \
+apt-get install -y apt-transport-https \
   && curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
 echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list
 apt-get install -y kubernetes-cni kubectl
-
 
 
 set -e
@@ -188,9 +203,29 @@ rm -rf util-linux
 
 tmp=`mktemp -d`
 cd "$tmp"
-make_kubelet
-make_kubeadm
-make_nsenter
+
+
+if [ -e /usr/bin/kubelet ]
+then
+        echo "* kubelet is installed."
+else
+	make_kubelet
+fi
+
+if [ -e /usr/bin/kubeadm ]
+then
+        echo "* kubeadm is installed."
+else
+	make_kubeadm
+fi
+
+
+if [ -e /usr/local/bin/nsenter ]
+then
+        echo "* nsente is installed."
+else
+	make_nsenter
+fi
 
 cat <<EOF
 All done!
