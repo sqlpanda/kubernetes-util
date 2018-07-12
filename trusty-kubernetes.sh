@@ -27,6 +27,33 @@
 # https://gist.github.com/sjain2682
 
 
+# Install kubernete in Ubunto 14
+apt-get install docker.io -y
+usermod -aG docker [YourUserNameHere]  
+service docker restart  
+
+
+apt-get install openssl make curl ethtool  cri-tools binutils  ebtables socat git   -y
+
+
+wget https://dl.google.com/go/go1.10.linux-amd64.tar.gz
+tar -xvf go1.10.linux-amd64.tar.gz
+mv go /usr/local
+ln -s /usr/local/go/bin/go /usr/bin/go
+go version
+rm go1.10.linux-amd64.tar.gz
+
+wget https://github.com/coreos/etcd/releases/download/v3.3.8/etcd-v3.3.8-linux-amd64.tar.gz
+tar xzvf etcd-v3.3.8-linux-amd64.tar.gz
+cd etcd-v3.3.8-linux-amd64.tar.gz
+mv etcd* /usr/bin
+rm -rf etcd-v3.3.8-linux-amd64
+rm -rf etcd-v3.3.8-linux-amd64.tar.gz
+
+apt-get update && apt-get install -y apt-transport-https \
+  && curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list
+apt-get install -y kubernetes-cni kubectl
 
 
 
