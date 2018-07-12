@@ -38,7 +38,7 @@ else
 fi
 
 apt-get update > /dev/null
-apt-get install openssl make curl ethtool binutils cri-tools binutils  ebtables socat git   -y
+apt-get install openssl make curl ethtool binutils ebtables socat git   -y
 
 
 if [ -e /usr/bin/go ] 
@@ -65,12 +65,16 @@ else
 	rm -rf etcd-v3.3.8-linux-amd64.tar.gz
 fi
 
-
-apt-get install -y apt-transport-https \
+if [ -e /usr/bin/kubectl ]
+then
+  echo "* kubectl is installed."
+else
+apt-get update && apt-get install -y apt-transport-https \
   && curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
 echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list
-apt-get install -y kubernetes-cni kubectl
-
+apt-get update > /dev/null
+apt-get install -y kubernetes-cni kubectl cri-tools
+fi
 
 set -e
 set -x
