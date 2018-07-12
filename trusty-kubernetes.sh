@@ -221,6 +221,7 @@ then
         echo "* kubeadm is installed."
 else
 	make_kubeadm
+	dpkg -i $tmp/*-patched.deb
 fi
 
 
@@ -229,11 +230,9 @@ then
         echo "* nsente is installed."
 else
 	make_nsenter
+	cp -v $tmp/nsenter /usr/local/bin
 fi
 
-cat <<EOF
-All done!
 
-# cp -v $tmp/nsenter /usr/local/bin
-# dpkg -i $tmp/*-patched.deb
-EOF
+
+
